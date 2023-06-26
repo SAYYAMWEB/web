@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Video Player</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body>
+    <h1>YouTube Video Player</h1>
+    <p>Paste your YouTube video link and select the number of videos to play:</p>
+    <input type="text" id="videoLink" placeholder="YouTube Video Link">
+    <input type="number" id="numberOfVideos" placeholder="Number of Videos">
+    <button onclick="playVideos()">Play Videos</button>
+
+    <div id="player"></div>
+
+    <script>
+        function playVideos() {
+            var videoLink = document.getElementById("videoLink").value;
+            var numberOfVideos = parseInt(document.getElementById("numberOfVideos").value);
+
+            var player;
+            var videoIds = [];
+
+            // Extract video ID from the link
+            var videoId = videoLink.split('v=')[1];
+            var ampersandPosition = videoId.indexOf('&');
+            if (ampersandPosition !== -1) {
+                videoId = videoId.substring(0, ampersandPosition);
+            }
+
+            // Create an array of video IDs
+            for (var i = 0; i < numberOfVideos; i++) {
+                videoIds.push(videoId);
+            }
+
+            // Load the YouTube IFrame API asynchronously
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            // Callback function for the API to create the player
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player('player', {
+                    height: '360',
+                    width: '640',
+                    videoId: videoIds.join(','),
+                    playerVars: {
+                        'autoplay': 1,
+                        'controls': 0,
+                        'loop': 1,
+                        'mute': 1
+                    }
+                });
+            }
+
+            // Function to load the YouTube IFrame API and create the player
+            window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+        }
+    </script>
+</body>
+</html>
